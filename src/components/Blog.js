@@ -1,8 +1,8 @@
 import React from 'react'
 const Blog = ({blog}) => (
   <div>
-    {blog.title} {blog.author}
-  </div>  
+    <i>{blog.title}</i> by {blog.author}
+  </div>
 )
 
 export default Blog
