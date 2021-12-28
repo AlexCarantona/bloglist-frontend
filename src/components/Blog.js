@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, updateHandler }) => {
+const Blog = ({ blog, updateHandler, userInfo, deleteHandler }) => {
   const blogStyle = {
     borderWidth: 1,
     border: 'solid',
@@ -14,6 +14,7 @@ const Blog = ({ blog, updateHandler }) => {
     ? {display: ''}
     : {display: 'none'}
 
+
   return (
   <div style={blogStyle}>
     <span>
@@ -26,6 +27,8 @@ const Blog = ({ blog, updateHandler }) => {
       <p>{blog.url}</p>
       <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
       <p>Added by: {blog.user.username}</p>
+      {blog.user.username === userInfo.username
+        && <button onClick={() => deleteHandler(blog)}>Delete</button>}
     </section>
   </div>
 )

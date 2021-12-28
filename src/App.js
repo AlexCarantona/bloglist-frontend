@@ -74,6 +74,17 @@ const App = () => {
     fetchBlogs();
   }
 
+  const deleteBlog = async deleteCandidate => {
+    const deleted = window.confirm(`You want to delete ${deleteCandidate.title}?`)
+      ? await blogService.deleteBlog(deleteCandidate.id)
+      : '';
+    deleted === 204
+      ? setNotification({ type: 'success', text: 'Post erased.'})
+      : setNotification({ type: 'error', text: 'Deletion failed.'})
+    setTimeout(() => setNotification({}), 5000)
+    fetchBlogs();
+  }
+
   const logOut = () => {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
@@ -100,7 +111,13 @@ const App = () => {
         />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateHandler={upLikeBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateHandler={upLikeBlog}
+          userInfo={user}
+          deleteHandler={deleteBlog}
+        />
       )}
       </>
     }
