@@ -16,18 +16,18 @@ const Blog = ({ blog, updateHandler, userInfo, deleteHandler }) => {
 
 
   return (
-    <div style={blogStyle}>
-      <span>
+    <div style={blogStyle} className='blogInfo'>
+      <span className='blogHeader'>
         <i>{blog.title}</i> by {blog.author}
         <button onClick={() => setVisible(!visible)}>
           {visible ? 'Hide' : 'Details'}
         </button>
       </span>
-      <section style={detailsStyle}>
+      <section style={detailsStyle} className='blogDetails'>
         <p>{blog.url}</p>
         <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
         <p>Added by: {blog.user.username}</p>
-        {blog.user.username === userInfo.username
+        {blog.user.username === userInfo?.username
         && <button onClick={() => deleteHandler(blog)}>Delete</button>}
       </section>
     </div>
