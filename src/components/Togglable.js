@@ -1,11 +1,13 @@
-import React, { useState, useImperativeHandle } from 'react';
+import React, { useState, useImperativeHandle } from 'react'
 
 const Togglable = React.forwardRef((props, ref) => {
 
-  const [visible, setVisible] = useState(false);
+  Togglable.displayName= 'Togglable'
 
-  const visibleState = { display: visible ? '' : 'none'};
-  const invisibleState = { display: visible ? 'none' : ''}
+  const [visible, setVisible] = useState(false)
+
+  const visibleState = { display: visible ? '' : 'none' }
+  const invisibleState = { display: visible ? 'none' : '' }
 
   const toggle = () => {
     setVisible(!visible)
@@ -29,4 +31,4 @@ const Togglable = React.forwardRef((props, ref) => {
 
 })
 
-export default Togglable;
+export default Togglable

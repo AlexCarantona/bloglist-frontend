@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
 const Notification = ({ content }) => {
-  const { type, text } = content;
+  const { type, text } = content
   return (
     <h2 className={type}>
-    {text}
+      {text}
     </h2>
   )
-};
+}
 
-export default Notification;
+export default Notification

@@ -6,32 +6,32 @@ const Blog = ({ blog, updateHandler, userInfo, deleteHandler }) => {
     paddingTop: 10,
     paddingLeft: 2,
     marginBottom: 5,
-  };
+  }
 
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
 
   const detailsStyle = visible
-    ? {display: ''}
-    : {display: 'none'}
+    ? { display: '' }
+    : { display: 'none' }
 
 
   return (
-  <div style={blogStyle}>
-    <span>
-      <i>{blog.title}</i> by {blog.author}
-      <button onClick={() => setVisible(!visible)}>
-      {visible ? 'Hide' : 'Details'}
-      </button>
-    </span>
-    <section style={detailsStyle}>
-      <p>{blog.url}</p>
-      <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
-      <p>Added by: {blog.user.username}</p>
-      {blog.user.username === userInfo.username
+    <div style={blogStyle}>
+      <span>
+        <i>{blog.title}</i> by {blog.author}
+        <button onClick={() => setVisible(!visible)}>
+          {visible ? 'Hide' : 'Details'}
+        </button>
+      </span>
+      <section style={detailsStyle}>
+        <p>{blog.url}</p>
+        <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
+        <p>Added by: {blog.user.username}</p>
+        {blog.user.username === userInfo.username
         && <button onClick={() => deleteHandler(blog)}>Delete</button>}
-    </section>
-  </div>
-)
-};
+      </section>
+    </div>
+  )
+}
 
 export default Blog
