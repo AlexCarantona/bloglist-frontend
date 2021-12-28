@@ -13,10 +13,7 @@ const App = () => {
   //User form
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  // Blog form
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+
   const [user, setUser] = useState(null);
   const blogFormRef = useRef();
 
@@ -57,18 +54,10 @@ const App = () => {
     }
   };
 
-  const newBlogHandler = async (event) => {
-    event.preventDefault();
-    blogService.setToken(user.token)
-    const added = await blogService.createBlog({
-      title,
-      author,
-      url
-    });
+  const newBlogHandler = async (blogObject) => {
+
+    const added = await blogService.createBlog(blogObject);
     blogFormRef.current.toggle();
-    setTitle('');
-    setAuthor('');
-    setUrl('');
     added.error
       ? setNotification({ type: 'error', text: added.error})
       : setNotification({ type: 'success', text: `${added.title} added to site.`});
@@ -98,12 +87,6 @@ const App = () => {
       <button onClick={logOut}>Log out</button>
       <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
         <BlogForm
-          titleVar={title}
-          titleHandler={({ target }) => setTitle(target.value)}
-          authorVar={author}
-          authorHandler={({ target }) => setAuthor(target.value)}
-          urlVar={url}
-          urlHandler={({ target }) => setUrl(target.value)}
           newBlogHandler={newBlogHandler}
         />
       </Togglable>

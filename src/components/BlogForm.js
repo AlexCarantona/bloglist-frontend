@@ -1,25 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const BlogForm = (props) => {
+const BlogForm = ({ newBlogHandler }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    await newBlogHandler({
+      title,
+      author,
+      url
+    });
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  }
   return (
-    <form onSubmit={props.newBlogHandler}>
+    <form onSubmit={submitHandler}>
     Title:
     <input
       type='text'
-      onChange={props.titleHandler}
-      value={props.titleVar}
+      onChange={({ target }) => setTitle(target.value)}
+      value={title}
     />
     Author:
     <input
       type='text'
-      onChange={props.authorHandler}
-      value={props.authorVar}
+      onChange={({ target }) => setAuthor(target.value)}
+      value={author}
     />
     URL:
     <input
       type='text'
-      onChange={props.urlHandler}
-      value={props.urlVar}
+      onChange={({ target }) => setUrl(target.value)}
+      value={url}
     />
     <button type='submit'>
     Save new blog
