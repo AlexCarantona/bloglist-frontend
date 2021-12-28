@@ -55,7 +55,6 @@ const App = () => {
   };
 
   const newBlogHandler = async (blogObject) => {
-
     const added = await blogService.createBlog(blogObject);
     blogFormRef.current.toggle();
     added.error
@@ -64,6 +63,15 @@ const App = () => {
     setTimeout(() => setNotification({}), 5000)
     fetchBlogs();
   };
+
+  const upLikeBlog = async (blogObject) => {
+    const updated = await blogService.likeBlog(blogObject);
+    updated.error
+      ? setNotification({ type: 'error', text: updated.error.response.data.error})
+      : setNotification({ type: 'success', text: `You liked ${updated.title}!`});
+    setTimeout(() => setNotification({}), 5000)
+    fetchBlogs();
+  }
 
   const logOut = () => {
     window.localStorage.removeItem('loggedUser');
@@ -91,7 +99,7 @@ const App = () => {
         />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateHandler={upLikeBlog} />
       )}
       </>
     }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateHandler }) => {
   const blogStyle = {
     borderWidth: 1,
     border: 'solid',
@@ -24,7 +24,7 @@ const Blog = ({ blog }) => {
     </span>
     <section style={detailsStyle}>
       <p>{blog.url}</p>
-      <p>Likes: {blog.likes}<button>Like it!</button></p>
+      <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
       <p>Added by: {blog.user.username}</p>
     </section>
   </div>
