@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+  const [notification, setNotification] = useState({});
   const [blogs, setBlogs] = useState([]);
   //User form
   const [username, setUsername] = useState('');
@@ -48,18 +50,26 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      console.log(exception)
+    setNotification({ type: 'error', text: exception.response.data.error})
+    setTimeout(() => setNotification({}), 5000)
     }
   };
 
   const newBlogHandler = async (event) => {
     event.preventDefault();
     blogService.setToken(user.token)
-    await blogService.createBlog({
+    const added = await blogService.createBlog({
       title,
       author,
       url
     });
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+    added.error
+      ? setNotification({ type: 'error', text: added.error})
+      : setNotification({ type: 'success', text: `${added.title} added to site.`});
+    setTimeout(() => setNotification({}), 5000)
     fetchBlogs();
   };
 
@@ -70,6 +80,7 @@ const App = () => {
 
   return (
     <div>
+    <Notification content={notification} />
     { user === null ?
       <LoginForm
         userVar={username}
@@ -79,7 +90,7 @@ const App = () => {
         submitHandler={submitHandler}
       />
       : <>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
       <p>{user.username} is logged in</p>
       <button onClick={logOut}>Log out</button>
       <BlogForm
