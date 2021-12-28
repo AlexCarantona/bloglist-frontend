@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -17,6 +18,7 @@ const App = () => {
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
   const [user, setUser] = useState(null);
+  const blogFormRef = useRef();
 
   const fetchBlogs = async () => {
     const blogs = await blogService.getAll();
@@ -63,6 +65,7 @@ const App = () => {
       author,
       url
     });
+    blogFormRef.current.toggle();
     setTitle('');
     setAuthor('');
     setUrl('');
@@ -93,15 +96,17 @@ const App = () => {
       <h2>Blogs</h2>
       <p>{user.username} is logged in</p>
       <button onClick={logOut}>Log out</button>
-      <BlogForm
-        titleVar={title}
-        titleHandler={({ target }) => setTitle(target.value)}
-        authorVar={author}
-        authorHandler={({ target }) => setAuthor(target.value)}
-        urlVar={url}
-        urlHandler={({ target }) => setUrl(target.value)}
-        newBlogHandler={newBlogHandler}
-      />
+      <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
+        <BlogForm
+          titleVar={title}
+          titleHandler={({ target }) => setTitle(target.value)}
+          authorVar={author}
+          authorHandler={({ target }) => setAuthor(target.value)}
+          urlVar={url}
+          urlHandler={({ target }) => setUrl(target.value)}
+          newBlogHandler={newBlogHandler}
+        />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
