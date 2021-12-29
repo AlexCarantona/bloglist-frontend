@@ -65,7 +65,7 @@ describe('Blog app', function() {
       cy.contains('The Testing Blog by Author');
     })
 
-    it.only("Users can like blogs", function() {
+    it("Users can like blogs", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});
 
       cy.createBlog({
@@ -85,7 +85,30 @@ describe('Blog app', function() {
       cy.get('@likeOne').click();
 
       cy.get('@likeOne').parent().contains('Likes: 1');
-
+    });
+    
+    it("Only the user who added a blog can delete it", function() {
+      cy.login({ username: 'Tester', password: 'testingPWD'});
+      cy.contains('The Testing Blog')
+        .parent()
+        .contains('Details')
+        .click()
+        .parent().parent()
+        .contains('Delete')
+        .click();
+      cy.on('window:confirm', (message) => {
+        expect(message).to.eq('You want to delete The Testing Blog?')
+      })
+      cy.contains('The Testing Blog').should('not.exist');
+      cy.logout();
+      cy.login({ username: 'Dummy', password: 'dummyPWD'});
+      cy.contains('One blog')
+        .parent()
+        .contains('Details')
+        .click()
+        .parent().parent()
+        .contains('Delete')
+        .should('not.exist');
     })
   })
 

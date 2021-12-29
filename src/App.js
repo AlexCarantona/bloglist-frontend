@@ -76,6 +76,7 @@ const App = () => {
   }
 
   const deleteBlog = async deleteCandidate => {
+    blogService.setToken(user.token)
     const deleted = window.confirm(`You want to delete ${deleteCandidate.title}?`)
       ? await blogService.deleteBlog(deleteCandidate.id)
       : ''
