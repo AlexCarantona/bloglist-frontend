@@ -46,19 +46,16 @@ describe('Blog app', function() {
         password: 'testingPWD',
         name: 'Sylvester the Tester'
       });
-    });
-
-    beforeEach(function() {
-      cy.request('POST', 'http://localhost:3003/api/login',{
-        username: 'Tester',
-        password: 'testingPWD'
-      }).then( res => {
-      localStorage.setItem('loggedUser', JSON.stringify(res.body));
-      cy.visit('http://localhost:3000');
-    });
+      cy.request('POST', 'http://localhost:3003/api/users', {
+        username: 'Dummy',
+        password: 'dummyPWD',
+        name: 'A user without rights'
+      });
     });
 
     it("User can insert a blog", function() {
+      cy.login({ username: 'Tester', password: 'testingPWD'});
+
       cy.contains('Add new').click();
       cy.get('#newTitle').type('The Testing Blog');
       cy.get('#newAuthor').type('Author');
@@ -66,6 +63,29 @@ describe('Blog app', function() {
       cy.contains('Save new blog').click();
 
       cy.contains('The Testing Blog by Author');
+    })
+
+    it.only("Users can like blogs", function() {
+      cy.login({ username: 'Tester', password: 'testingPWD'});
+
+      cy.createBlog({
+        title: 'One blog',
+        author: 'One author',
+        url: 'one.com'
+      });
+
+      cy.contains('One blog')
+        .parent()
+        .contains('Details')
+        .click()
+        .parent().parent()
+        .contains('Like it!')
+        .as('likeOne');
+
+      cy.get('@likeOne').click();
+
+      cy.get('@likeOne').parent().contains('Likes: 1');
+
     })
   })
 
