@@ -86,7 +86,7 @@ describe('Blog app', function() {
 
       cy.get('@likeOne').parent().contains('Likes: 1');
     });
-    
+
     it("Only the user who added a blog can delete it", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});
       cy.contains('The Testing Blog')
@@ -110,6 +110,22 @@ describe('Blog app', function() {
         .contains('Delete')
         .should('not.exist');
     })
-  })
+
+    it("Posts are ordered by number of likes", function () {
+      cy.login({ username: 'Tester', password: 'testingPWD'});
+      cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
+      cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
+
+      cy.get('.blogInfo').each(($el, index, $lis) => {
+        switch(index){
+          case 0: cy.wrap($el).contains('Second blog'); break;
+          case 1: cy.wrap($el).contains('Third blog'); break;
+          case 2: cy.wrap($el).contains('One blog'); break;
+        }
+      })
+
+    });
+
+  });
 
 })
