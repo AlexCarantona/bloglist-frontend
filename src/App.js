@@ -56,6 +56,7 @@ const App = () => {
   }
 
   const newBlogHandler = async (blogObject) => {
+    blogService.setToken(user.token)
     const added = await blogService.createBlog(blogObject)
     blogFormRef.current.toggle()
     added.error
