@@ -17,7 +17,7 @@ const LoginForm = ({
   }
 
   return (
-    <form onSubmit={submitHandler}>
+    <form onSubmit={submitHandler} id='loginForm'>
 
       <label htmlFor='loginUsername'>Username</label>
       <input
