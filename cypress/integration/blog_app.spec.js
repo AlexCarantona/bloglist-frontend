@@ -34,7 +34,6 @@ describe('Blog app', function() {
 
       cy.get('#notification')
         .contains('invalid username or password')
-        .should('have.css', 'color', 'rgb(255, 0, 0)');
     })
   })
 

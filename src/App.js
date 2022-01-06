@@ -7,8 +7,12 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { useDispatch } from 'react-redux'
+
+import { notify } from './reducers/notificationReducer'
+
 const App = () => {
-  const [notification, setNotification] = useState({})
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
   //User form
   const [username, setUsername] = useState('')
@@ -50,8 +54,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotification({ type: 'error', text: exception.response.data.error })
-      setTimeout(() => setNotification({}), 5000)
+      dispatch(notify(exception.response.data.error))
     }
   }
 
@@ -59,31 +62,22 @@ const App = () => {
     blogService.setToken(user.token)
     const added = await blogService.createBlog(blogObject)
     blogFormRef.current.toggle()
-    added.error
-      ? setNotification({ type: 'error', text: added.error })
-      : setNotification({ type: 'success', text: `${added.title} added to site.` })
-    setTimeout(() => setNotification({}), 5000)
+    dispatch(notify(added.error ))
     fetchBlogs()
   }
 
   const upLikeBlog = async (blogObject) => {
     const updated = await blogService.likeBlog(blogObject)
-    updated.error
-      ? setNotification({ type: 'error', text: updated.error.response.data.error })
-      : setNotification({ type: 'success', text: `You liked ${updated.title}!` })
-    setTimeout(() => setNotification({}), 5000)
+    dispatch(notify(`You liked ${updated.title}!` ))
     fetchBlogs()
   }
 
   const deleteBlog = async deleteCandidate => {
     blogService.setToken(user.token)
-    const deleted = window.confirm(`You want to delete ${deleteCandidate.title}?`)
+    window.confirm(`You want to delete ${deleteCandidate.title}?`)
       ? await blogService.deleteBlog(deleteCandidate.id)
       : ''
-    deleted === 204
-      ? setNotification({ type: 'success', text: 'Post erased.' })
-      : setNotification({ type: 'error', text: 'Deletion failed.' })
-    setTimeout(() => setNotification({}), 5000)
+    dispatch(notify('Post erased.' ))
     fetchBlogs()
   }
 
@@ -94,7 +88,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification content={notification} />
+      <Notification />
       { user === null ?
         <LoginForm
           userVar={username}
