@@ -1,79 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import loginService from './services/login'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { notify } from './reducers/notificationReducer'
 import { allBlogs } from './reducers/blogReducer'
+import { loadUser, logout } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-
-  //User form
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const [user, setUser] = useState(null)
-  const blogFormRef = useRef()
+  const user = useSelector(state => state.user.user)
 
   useEffect(() => {
     dispatch(allBlogs())
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedUser'))
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(loadUser(loggedUserJSON))
     }
   }, [])
 
-  const submitHandler = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-      window.localStorage.setItem(
-        'loggedUser', JSON.stringify(user)
-      )
-      setUser(user)
-      //blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(notify(exception.response.data.error))
-    }
-  }
-
-  const logOut = () => {
-    window.localStorage.removeItem('loggedUser')
-    setUser(null)
-  }
 
   return (
     <div>
       <Notification />
-      { user === null ?
-        <LoginForm
-          userVar={username}
-          userHandler={(e) => setUsername(e.target.value)}
-          passwordVar={password}
-          passwordHandler={(e) => setPassword(e.target.value)}
-          submitHandler={submitHandler}
-        />
+      { !user ?
+        <LoginForm />
         : <>
           <h2>Blogs</h2>
           <p>{user.username} is logged in</p>
-          <button onClick={logOut}>Log out</button>
-          <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
+          <button onClick={() => dispatch(logout())}>Log out</button>
+          <Togglable buttonLabel='Add new blog'>
             <BlogForm />
           </Togglable>
           {blogs.map(blog =>

@@ -1,38 +1,34 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { login } from '../reducers/userReducer'
 
-const LoginForm = ({
-  userHandler,
-  userVar,
-  passwordHandler,
-  passwordVar,
-  submitHandler }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch()
 
-  LoginForm.propTypes = {
-    submitHandler : PropTypes.func.isRequired,
-    userHandler : PropTypes.func.isRequired,
-    passwordHandler : PropTypes.func.isRequired,
-    userVar : PropTypes.func.isRequired,
-    passwordVar : PropTypes.func.isRequired
+  const loginHandle = (e) => {
+    e.preventDefault()
+    const target = e.target
+    dispatch(login({
+      username: target.username.value,
+      password: target.password.value
+    }))
   }
 
   return (
-    <form onSubmit={submitHandler} id='loginForm'>
+    <form onSubmit={loginHandle} id='loginForm'>
 
       <label htmlFor='loginUsername'>Username</label>
       <input
         type='text'
+        name='username'
         id='loginUsername'
-        onChange={userHandler}
-        value={userVar}
       />
 
       <label htmlFor='loginPassword'>Password</label>
       <input
         type='password'
+        name='password'
         id='loginPassword'
-        onChange={passwordHandler}
-        value={passwordVar}
       />
       <button type='submit' id='loginButton'>Login</button>
     </form>
