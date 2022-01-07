@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, updateHandler, userInfo, deleteHandler }) => {
+import { useDispatch } from 'react-redux'
+import { like, deleteBlog } from '../reducers/blogReducer'
+
+const Blog = ({ blog, userInfo }) => {
+  const dispatch = useDispatch()
   const blogStyle = {
     borderWidth: 1,
     border: 'solid',
@@ -25,10 +29,10 @@ const Blog = ({ blog, updateHandler, userInfo, deleteHandler }) => {
       </span>
       <section style={detailsStyle} className='blogDetails'>
         <p>{blog.url}</p>
-        <p>Likes: {blog.likes}<button onClick={() => updateHandler(blog)}>Like it!</button></p>
+        <p>Likes: {blog.likes}<button onClick={() => dispatch(like(blog))}>Like it!</button></p>
         <p>Added by: {blog.user.username}</p>
         {blog.user.username === userInfo?.username
-        && <button onClick={() => deleteHandler(blog)}>Delete</button>}
+        && <button onClick={() => dispatch(deleteBlog(blog.id))}>Delete</button>}
       </section>
     </div>
   )

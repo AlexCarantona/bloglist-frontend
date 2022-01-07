@@ -1,4 +1,23 @@
 import con from '../services/blogs'
+import { notify } from './notificationReducer'
+
+export const deleteBlog = blogId => {
+  return async dispatch => {
+    const confirmation = window.confirm('You want to delete this post?')
+    if (confirmation){
+      await con.deleteBlog(blogId)
+      dispatch(notify('Post erased.'))
+    }
+    dispatch(allBlogs())
+  }
+}
+
+export const like = data => {
+  return async dispatch => {
+    await con.likeBlog(data)
+    dispatch(allBlogs())
+  }
+}
 
 export const createBlog = data => {
   return async dispatch => {
@@ -24,7 +43,7 @@ export const allBlogs = () => {
 const reducer = (state=[], action) => {
   switch (action.type) {
   case 'INITIALIZE': return action.data
-  case 'CREATE' : return state.concat(action.data)
+  case 'CREATE': return state.concat(action.data)
   default: return state
   }
 }

@@ -4,7 +4,6 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -46,27 +45,12 @@ const App = () => {
         'loggedUser', JSON.stringify(user)
       )
       setUser(user)
-      blogService.setToken(user.token)
+      //blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (exception) {
       dispatch(notify(exception.response.data.error))
     }
-  }
-
-  const upLikeBlog = async (blogObject) => {
-    const updated = await blogService.likeBlog(blogObject)
-    dispatch(notify(`You liked ${updated.title}!` ))
-    dispatch(allBlogs())
-  }
-
-  const deleteBlog = async deleteCandidate => {
-    blogService.setToken(user.token)
-    window.confirm(`You want to delete ${deleteCandidate.title}?`)
-      ? await blogService.deleteBlog(deleteCandidate.id)
-      : ''
-    dispatch(notify('Post erased.' ))
-    dispatch(allBlogs())
   }
 
   const logOut = () => {
@@ -96,9 +80,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              updateHandler={upLikeBlog}
               userInfo={user}
-              deleteHandler={deleteBlog}
             />
           )}
         </>

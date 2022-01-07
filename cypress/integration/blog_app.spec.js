@@ -38,7 +38,7 @@ describe('Blog app', function() {
   })
 
   describe('When logged in...', function() {
-    before(function() {
+    beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/testing/reset');
       cy.request('POST', 'http://localhost:3003/api/users', {
         username: 'Tester',
@@ -51,6 +51,10 @@ describe('Blog app', function() {
         name: 'A user without rights'
       });
     });
+
+    afterEach(function() {
+      cy.request('POST', 'http://localhost:3003/api/testing/reset');
+    })
 
     it("User can insert a blog", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});
@@ -88,6 +92,11 @@ describe('Blog app', function() {
 
     it("Only the user who added a blog can delete it", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});
+      cy.createBlog({
+        title: 'The Testing Blog',
+        author: 'Dostoievsky',
+        url: 'karenina.com'
+      })
       cy.contains('The Testing Blog')
         .parent()
         .contains('Details')
@@ -96,9 +105,14 @@ describe('Blog app', function() {
         .contains('Delete')
         .click();
       cy.on('window:confirm', (message) => {
-        expect(message).to.eq('You want to delete The Testing Blog?')
+        expect(message).to.eq('You want to delete this post?')
       })
       cy.contains('The Testing Blog').should('not.exist');
+      cy.createBlog({
+        title: 'One blog',
+        author: 'One author',
+        url: 'one.com'
+      });
       cy.logout();
       cy.login({ username: 'Dummy', password: 'dummyPWD'});
       cy.contains('One blog')
