@@ -7,13 +7,15 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { notify } from './reducers/notificationReducer'
+import { allBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
+
   //User form
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -21,14 +23,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
-  const fetchBlogs = async () => {
-    const blogs = await blogService.getAll()
-    blogs.sort((a, b) => b.likes - a.likes)
-    setBlogs( blogs )
-  }
-
-  useEffect( async () => {
-    fetchBlogs()
+  useEffect(() => {
+    dispatch(allBlogs())
   }, [])
 
   useEffect(() => {
@@ -58,18 +54,10 @@ const App = () => {
     }
   }
 
-  const newBlogHandler = async (blogObject) => {
-    blogService.setToken(user.token)
-    const added = await blogService.createBlog(blogObject)
-    blogFormRef.current.toggle()
-    dispatch(notify(added.error ))
-    fetchBlogs()
-  }
-
   const upLikeBlog = async (blogObject) => {
     const updated = await blogService.likeBlog(blogObject)
     dispatch(notify(`You liked ${updated.title}!` ))
-    fetchBlogs()
+    dispatch(allBlogs())
   }
 
   const deleteBlog = async deleteCandidate => {
@@ -78,7 +66,7 @@ const App = () => {
       ? await blogService.deleteBlog(deleteCandidate.id)
       : ''
     dispatch(notify('Post erased.' ))
-    fetchBlogs()
+    dispatch(allBlogs())
   }
 
   const logOut = () => {
@@ -102,9 +90,7 @@ const App = () => {
           <p>{user.username} is logged in</p>
           <button onClick={logOut}>Log out</button>
           <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
-            <BlogForm
-              newBlogHandler={newBlogHandler}
-            />
+            <BlogForm />
           </Togglable>
           {blogs.map(blog =>
             <Blog

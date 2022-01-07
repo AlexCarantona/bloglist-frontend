@@ -14,7 +14,7 @@ const getAll = () => {
 
 const createBlog = async newBlog => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: `bearer ${JSON.parse(window.localStorage.getItem('loggedUser')).token}` },
   }
   const res = await axios.post(baseUrl, newBlog, config)
   return res.data
