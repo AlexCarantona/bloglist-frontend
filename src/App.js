@@ -6,12 +6,13 @@ import User from './components/User'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Navbar from './components/Navbar'
 import Togglable from './components/Togglable'
 import { Routes, Route } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { loadUser, logout } from './reducers/userReducer'
+import { loadUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -30,8 +31,7 @@ const App = () => {
       { !user.token ?
         <LoginForm />
         :<>
-          <p>{user.username} is logged in</p>
-          <button onClick={() => dispatch(logout())}>Log out</button>
+          <Navbar />
           <Togglable buttonLabel='Add new blog'>
             <BlogForm />
           </Togglable>

@@ -61,6 +61,30 @@ describe('Blog app', function() {
       cy.request('POST', 'http://localhost:3003/api/testing/reset');
     })
 
+    it.only("A navbar with active links to Blogs/Users pages", function () {
+      cy
+        .get('nav')
+        .contains('Blogs')
+        .parent()
+        .contains('Users')
+        .parent()
+        .contains('Log out')
+
+      cy
+        .contains('Blogs')
+        .click()
+
+      cy
+        .get('li')
+        .should('have.length', 3)
+
+      cy
+        .contains('Users')
+        .click()
+
+      cy.contains('Tester: 3 blogs')
+    })
+
     it("User can insert a blog", function() {
       cy.contains('Add new').click();
       cy.get('#newTitle').type('The Testing Blog');
@@ -152,7 +176,6 @@ describe('Blog app', function() {
         .children()
         .should('have.length', 3)
     })
-
   })
 })
 
