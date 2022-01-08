@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { allUsers } from '../reducers/openUsersReducer'
-
+import { Link, Outlet } from 'react-router-dom'
 
 const UserList = () => {
   const dispatch = useDispatch()
@@ -14,10 +14,17 @@ const UserList = () => {
   return (
     <>
       <h2>Users</h2>
-      {users.map(u => <p
-        key={u.username}
-        className='openUser'
-      >{u.username}: {u.blogs.length} blogs</p>)}
+      {users.map(u =>
+        <p key={users.indexOf(u)}>
+          <Link
+            className='openUser'
+            to={u.id}
+          >
+            {u.username}: {u.blogs.length} blogs
+          </Link>
+        </p>
+      )}
+      <Outlet />
     </>
   )
 }

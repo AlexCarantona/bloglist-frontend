@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
+import User from './components/User'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -22,7 +23,6 @@ const App = () => {
     }
   }, [])
 
-
   return (
     <div>
       <Notification />
@@ -35,7 +35,9 @@ const App = () => {
             <BlogForm />
           </Togglable>
           <Routes>
-            <Route path='/users' element={<UserList />} />
+            <Route path='users' element={<UserList />}>
+              <Route path=':id' element={<User />} />
+            </Route>
             <Route path='/' element={<BlogList />} />
           </Routes>
         </>

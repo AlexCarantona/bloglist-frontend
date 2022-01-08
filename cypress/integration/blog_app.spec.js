@@ -144,8 +144,10 @@ describe('Blog app', function() {
 
     });
 
-    it("User route displays list of users/blogs", function () {
-cy.login({ username: 'Tester', password: 'testingPWD'})
+    describe.only("Specific User route", function() {
+
+    beforeEach(function() {
+      cy.login({ username: 'Tester', password: 'testingPWD'})
       cy.createBlog({
         title: 'One blog',
         author: 'One author',
@@ -153,15 +155,33 @@ cy.login({ username: 'Tester', password: 'testingPWD'})
       });
       cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
       cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
+    })
+
+    it("User route displays list of users/blogs", function () {
       cy.visit('http://localhost:3000/users')
       cy
-        .get('p.openUser')
+        .get('a.openUser')
         .should('have.length', 2)
         .contains('Tester: 3 blogs')
-        .parent()
+        .parent().parent()
         .contains('Dummy: 0 blogs')
     })
 
-  });
+    it("Clicking on a link takes to a specific user page", function () {
+      cy.visit('http://localhost:3000/users')
+      cy
+        .contains('Tester: 3 blogs')
+        .click()
+        .get('h2')
+        .contains('Tester')
+      cy
+        .get('ul')
+        .children()
+        .should('have.length', 3)
+    })
+
+  })
+
+  })
 
 })
