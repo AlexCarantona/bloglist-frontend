@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 const User = () => {
   const { id } = useParams()
@@ -12,7 +12,11 @@ const User = () => {
       <h3>Added blogs: </h3>
       <ul>
         {profile.blogs.map(ub =>
-          <li key={ub.id}>{ub.title}</li>
+          <li key={ub.id}>
+            <Link to={`/blogs/${ub.id}`}>
+              {ub.title}
+            </Link>
+          </li>
         )}
       </ul>
     </>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import BlogList from './components/BlogList'
+import SingleBlog from './components/SingleBlog'
 import UserList from './components/UserList'
 import User from './components/User'
 import BlogForm from './components/BlogForm'
@@ -38,6 +39,7 @@ const App = () => {
             <Route path='users' element={<UserList />}>
               <Route path=':id' element={<User />} />
             </Route>
+            <Route path='/blogs/:id' element={<SingleBlog />} />
             <Route path='/' element={<BlogList />} />
           </Routes>
         </>

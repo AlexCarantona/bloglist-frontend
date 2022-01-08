@@ -50,6 +50,11 @@ describe('Blog app', function() {
         password: 'dummyPWD',
         name: 'A user without rights'
       });
+      cy.login({ username: 'Tester', password: 'testingPWD'});
+      cy.createBlog({title: 'One blog', author: 'One author', url: 'one.com'});
+      cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
+      cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
+
     });
 
     afterEach(function() {
@@ -57,8 +62,6 @@ describe('Blog app', function() {
     })
 
     it("User can insert a blog", function() {
-      cy.login({ username: 'Tester', password: 'testingPWD'});
-
       cy.contains('Add new').click();
       cy.get('#newTitle').type('The Testing Blog');
       cy.get('#newAuthor').type('Author');
@@ -68,21 +71,21 @@ describe('Blog app', function() {
       cy.contains('The Testing Blog by Author');
     })
 
+    it("Clicking on a blog link takes to the blogs' page", function() {
+
+      cy.contains('One blog')
+        .click()
+      cy
+      .contains('One blog by One author')
+
+    })
+
     it("Users can like blogs", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});
 
-      cy.createBlog({
-        title: 'One blog',
-        author: 'One author',
-        url: 'one.com'
-      });
-
       cy.contains('One blog')
-        .parent()
-        .contains('Details')
         .click()
-        .parent().parent()
-        .contains('Like it!')
+      cy.contains('Like it!')
         .as('likeOne');
 
       cy.get('@likeOne').click();
@@ -98,64 +101,34 @@ describe('Blog app', function() {
         url: 'karenina.com'
       })
       cy.contains('The Testing Blog')
-        .parent()
-        .contains('Details')
         .click()
-        .parent().parent()
+      cy
         .contains('Delete')
         .click();
       cy.on('window:confirm', (message) => {
         expect(message).to.eq('You want to delete this post?')
       })
       cy.contains('The Testing Blog').should('not.exist');
-      cy.createBlog({
-        title: 'One blog',
-        author: 'One author',
-        url: 'one.com'
-      });
       cy.logout();
       cy.login({ username: 'Dummy', password: 'dummyPWD'});
       cy.contains('One blog')
-        .parent()
-        .contains('Details')
         .click()
-        .parent().parent()
+      cy
         .contains('Delete')
         .should('not.exist');
     })
 
     it("Posts are ordered by number of likes", function () {
-      cy.login({ username: 'Tester', password: 'testingPWD'});
-      cy.createBlog({
-        title: 'One blog',
-        author: 'One author',
-        url: 'one.com'
-      });
-      cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
-      cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
-
-      cy.get('.blogInfo').each(($el, index, $lis) => {
+      cy.get('ul').each(($el, index, $lis) => {
         switch(index){
           case 0: cy.wrap($el).contains('Second blog'); break;
           case 1: cy.wrap($el).contains('Third blog'); break;
           case 2: cy.wrap($el).contains('One blog'); break;
         }
       })
-
-    });
-
-    describe.only("Specific User route", function() {
-
-    beforeEach(function() {
-      cy.login({ username: 'Tester', password: 'testingPWD'})
-      cy.createBlog({
-        title: 'One blog',
-        author: 'One author',
-        url: 'one.com'
-      });
-      cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
-      cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
     })
+
+    describe("Specific User route", function() {
 
     it("User route displays list of users/blogs", function () {
       cy.visit('http://localhost:3000/users')
@@ -181,7 +154,6 @@ describe('Blog app', function() {
     })
 
   })
-
-  })
+})
 
 })
