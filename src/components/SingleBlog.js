@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
-import { like, deleteBlog } from '../reducers/blogReducer'
+import { like, deleteBlog, addComment } from '../reducers/blogReducer'
 
 const SingleBlog = () => {
   const dispatch = useDispatch()
@@ -11,6 +11,16 @@ const SingleBlog = () => {
     state.blogs.find(b => b.id === id))
 
   const userInfo = useSelector(state => state.user)
+
+  const handleComment = event => {
+    event.preventDefault()
+    dispatch(
+      addComment(
+        event.target.commentField.value,
+        blog.id
+      )
+    )
+  }
 
   const blogStyle = {
     borderWidth: 1,
@@ -34,6 +44,21 @@ const SingleBlog = () => {
           dispatch(deleteBlog(blog.id))
           navigate('/')
         }}>Delete</button>}
+      </section>
+      <section className='comments'>
+        <h2>Comments</h2>
+        <form onSubmit={(e) => handleComment(e)} >
+          <input
+            type='text'
+            name='commentField'
+            placeholder='Add your comment...'
+            id='commentInput'
+          />
+          <button type='submit'>Send</button>
+        </form>
+        <ul>
+          {blog.comments.map(com => <li key={com}>{com}</li>)}
+        </ul>
       </section>
     </div>
   )

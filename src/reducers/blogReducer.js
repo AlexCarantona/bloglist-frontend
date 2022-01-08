@@ -12,6 +12,13 @@ export const deleteBlog = blogId => {
   }
 }
 
+export const addComment = (comment, blogid) => {
+  return async dispatch => {
+    await con.addComment(comment, blogid)
+    dispatch(allBlogs())
+  }
+}
+
 export const like = data => {
   return async dispatch => {
     await con.likeBlog(data)

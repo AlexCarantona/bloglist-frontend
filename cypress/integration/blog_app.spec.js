@@ -51,7 +51,7 @@ describe('Blog app', function() {
         name: 'A user without rights'
       });
       cy.login({ username: 'Tester', password: 'testingPWD'});
-      cy.createBlog({title: 'One blog', author: 'One author', url: 'one.com'});
+      cy.createBlog({title: 'One blog', author: 'One author', url: 'one.com', comments: ['Funniest stuff ever', 'I love you']});
       cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
       cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
 
@@ -61,7 +61,7 @@ describe('Blog app', function() {
       cy.request('POST', 'http://localhost:3003/api/testing/reset');
     })
 
-    it.only("A navbar with active links to Blogs/Users pages", function () {
+    it("A navbar with active links to Blogs/Users pages", function () {
       cy
         .get('nav')
         .contains('Blogs')
@@ -102,11 +102,14 @@ describe('Blog app', function() {
       cy
       .contains('One blog by One author')
 
+      cy
+        .get('.comments')
+        .get('li')
+        .should('have.length', 2)
+
     })
 
     it("Users can like blogs", function() {
-      cy.login({ username: 'Tester', password: 'testingPWD'});
-
       cy.contains('One blog')
         .click()
       cy.contains('Like it!')
@@ -116,6 +119,21 @@ describe('Blog app', function() {
 
       cy.get('@likeOne').parent().contains('Likes: 1');
     });
+
+    it("Users can post comments on blogs", function() {
+      cy
+        .contains('One blog')
+        .click()
+
+      cy
+        .get('#commentInput')
+        .type('Love this one')
+        .parent()
+        .contains('Send')
+        .click()
+      cy
+        .contains('Love this one')
+    })
 
     it("Only the user who added a blog can delete it", function() {
       cy.login({ username: 'Tester', password: 'testingPWD'});

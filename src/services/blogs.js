@@ -14,6 +14,13 @@ const createBlog = async newBlog => {
   return res.data
 }
 
+const addComment = async (comment, id) => {
+  const config = {
+    headers: { Authorization: `bearer ${JSON.parse(window.localStorage.getItem('loggedUser')).token}` },
+  }
+  await axios.post(`${baseUrl}/${id}/comments`, { comment }, config)
+}
+
 const likeBlog = async blogLiked => {
   const increasedLikes = { ...blogLiked, likes: blogLiked.likes + 1 }
   delete increasedLikes.id
@@ -30,4 +37,4 @@ const deleteBlog = async deleteId => {
   return res.status
 }
 
-export default { getAll, createBlog, likeBlog, deleteBlog }
+export default { getAll, createBlog, likeBlog, deleteBlog, addComment }
