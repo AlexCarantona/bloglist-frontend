@@ -126,6 +126,11 @@ describe('Blog app', function() {
 
     it("Posts are ordered by number of likes", function () {
       cy.login({ username: 'Tester', password: 'testingPWD'});
+      cy.createBlog({
+        title: 'One blog',
+        author: 'One author',
+        url: 'one.com'
+      });
       cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
       cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
 
@@ -138,6 +143,24 @@ describe('Blog app', function() {
       })
 
     });
+
+    it("User route displays list of users/blogs", function () {
+cy.login({ username: 'Tester', password: 'testingPWD'})
+      cy.createBlog({
+        title: 'One blog',
+        author: 'One author',
+        url: 'one.com'
+      });
+      cy.createBlog({title: 'Third blog', author: 'Third', url: 'third.com', likes: 32});
+      cy.createBlog({title: 'Second blog', author: 'Second', url: 'second.com', likes: 50});
+      cy.visit('http://localhost:3000/users')
+      cy
+        .get('p.openUser')
+        .should('have.length', 2)
+        .contains('Tester: 3 blogs')
+        .parent()
+        .contains('Dummy: 0 blogs')
+    })
 
   });
 

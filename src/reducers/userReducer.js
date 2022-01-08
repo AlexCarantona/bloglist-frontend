@@ -17,8 +17,8 @@ export const logout = () => { return { type: 'CLEAN' } }
 
 const reducer = (state={}, action) => {
   switch (action.type) {
-  case 'LOAD': return { ...state, user: action.user }
-  case 'CLEAN': return {}
+  case 'LOAD': return action.user
+  case 'CLEAN': return state
   default: return state
   }
 }

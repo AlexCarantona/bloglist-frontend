@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react'
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
+import UserList from './components/UserList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { Routes, Route } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { allBlogs } from './reducers/blogReducer'
 import { loadUser, logout } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user.user)
-
-  useEffect(() => {
-    dispatch(allBlogs())
-  }, [])
+  const user = useSelector(state => state.user)
 
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedUser'))
@@ -30,22 +26,18 @@ const App = () => {
   return (
     <div>
       <Notification />
-      { !user ?
+      { !user.token ?
         <LoginForm />
-        : <>
-          <h2>Blogs</h2>
+        :<>
           <p>{user.username} is logged in</p>
           <button onClick={() => dispatch(logout())}>Log out</button>
           <Togglable buttonLabel='Add new blog'>
             <BlogForm />
           </Togglable>
-          {blogs.map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              userInfo={user}
-            />
-          )}
+          <Routes>
+            <Route path='/users' element={<UserList />} />
+            <Route path='/' element={<BlogList />} />
+          </Routes>
         </>
       }
     </div>
