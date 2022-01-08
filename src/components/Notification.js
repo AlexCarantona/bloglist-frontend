@@ -1,9 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Notification = ({ content }) => {
-  const { type, text } = content
+const Notification = () => {
+  const text = useSelector(state =>
+    state.notification.message
+  )
   return (
-    <h2 className={type} id='notification'>
+    <h2 id='notification'>
       {text}
     </h2>
   )
