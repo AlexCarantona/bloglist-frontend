@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { allBlogs } from '../reducers/blogReducer'
 import { Link } from 'react-router-dom'
+import { List, ListItem, ListItemText } from '@mui/material'
 
 const BlogList = () => {
   const dispatch = useDispatch()
@@ -15,17 +16,17 @@ const BlogList = () => {
   return (
     <>
       <h2>Blogs</h2>
-      <ul>
+      <List>
         {blogs.map(blog =>
-          <li key={blog.id}>
-            <Link
-              to={`/blogs/${blog.id}`}
-            >
-              {blog.title} by {blog.author}
-            </Link>
-          </li>
+          <ListItem
+            key={blog.id}
+            component={Link}
+            to={`/blogs/${blog.id}`}
+          >
+            <ListItemText primary={`${blog.title} by ${blog.author}`} />
+          </ListItem>
         )}
-      </ul>
+      </List>
     </>
   )
 }
